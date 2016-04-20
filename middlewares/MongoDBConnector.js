@@ -37,16 +37,20 @@ MongoDBConnector.context = function (callback) {
 /**
  * @param page is an object describing the page of the resource
  */
-MongoDBConnector._getMongoConnectionsStream = function (page, cb) {
-  var connectionsStream = this._db.collection(this.collections['connections'])
-      .find({'departureTime': {'$gte': page.getInterval().start, '$lt': page.getInterval().end}})
-      .sort({'departureTime': 1})
-      .stream().pipe(new MongoDBFixStream());
+MongoDBConnector._getMongoConnectionsStream = function (page, onlyWheelchairAccessibleTrips, cb) {
+  var connectionsStream = this._db.collection(this.collections['connections']);
+  if (onlyWheelchairAccessibleTrips) {
+    connectionsStream = connectionsStream.find({'departureTime': {'$gte': page.getInterval().start, '$lt': page.getInterval().end}, 'gtfs:WheelchairBoardingStatus': { $eq: 'gtfs:WheelchairAccessible'}});
+  } else {
+    connectionsStream = connectionsStream.find({'departureTime': {'$gte': page.getInterval().start, '$lt': page.getInterval().end}});
+  }
+  connectionsStream = connectionsStream.sort({'departureTime': 1})
+                                       .stream().pipe(new MongoDBFixStream());
   cb(null, connectionsStream);
 };
 
-MongoDBConnector.getConnectionsPage = function (page, cb) {
-  var stream = this._getMongoConnectionsStream(page, function (error, connectionsStream) {
+MongoDBConnector.getConnectionsPage = function (page, onlyWheelchairAccessibleTrips, cb) {
+  var stream = this._getMongoConnectionsStream(page, onlyWheelchairAccessibleTrips, function (error, connectionsStream) {
     if (error) {
       cb (error);
     } else {
