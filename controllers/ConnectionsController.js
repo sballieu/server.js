@@ -28,14 +28,19 @@ module.exports = function (request, response, next) {
       "previousPage" : request.locals.page.getPreviousPage(),
       "search" : {
         "@type" : "IriTemplate",
-        "template" : request.locals.config.baseUri + "/connections/{?departureTime}",
+        "template" : request.locals.config.baseUri + "/connections/{?departureTime}{&onlyWheelchairAccessibleTrips}",
         "variableRepresentation" : "BasicRepresentation",
-        "mapping" : {
+        "mapping" : [{
           "@type" : "IriTemplateMapping",
           "variable" : "departureTime",
           "required" : true,
           "property" : "http://semweb.mmlab.be/ns/linkedconnections#departureTimeQuery"
-        }
+        },{
+          "@type" : "IriTemplateMapping",
+          "variable" : "onlyWheelchairAccessibleTrips",
+          "required" : false,
+          "property" : "http://semweb.mmlab.be/ns/linkedconnections#onlyWheelchairAccessibleTrips"
+        }]
       }
     });
     

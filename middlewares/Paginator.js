@@ -35,17 +35,29 @@ module.exports = function (req, res, next) {
 
   req.locals.page.getNextPage = function () {
     var dt = moment(req.query.departureTime);
-    return self._base + "/connections/?departureTime=" + encodeURIComponent(dt.add(10, "minutes").format("YYYY-MM-DDTHH:mm"));
+    var onlyWheelchairAccessibleTrips = "";
+    if (req.query.onlyWheelchairAccessibleTrips && req.query.onlyWheelchairAccessibleTrips.toLowerCase() == "true") {
+      onlyWheelchairAccessibleTrips = "&onlyWheelchairAccessibleTrips=true"
+    }
+    return self._base + "/connections/?departureTime=" + encodeURIComponent(dt.add(10, "minutes").format("YYYY-MM-DDTHH:mm")) + onlyWheelchairAccessibleTrips;
   }
   
   req.locals.page.getPreviousPage = function () {
     var dt = moment(req.query.departureTime);
-    return self._base + "/connections/?departureTime=" +  encodeURIComponent(dt.subtract(10, "minutes").format("YYYY-MM-DDTHH:mm"));
+    var onlyWheelchairAccessibleTrips = "";
+    if (req.query.onlyWheelchairAccessibleTrips && req.query.onlyWheelchairAccessibleTrips.toLowerCase() == "true") {
+      onlyWheelchairAccessibleTrips = "&onlyWheelchairAccessibleTrips=true"
+    }
+    return self._base + "/connections/?departureTime=" +  encodeURIComponent(dt.subtract(10, "minutes").format("YYYY-MM-DDTHH:mm")) + onlyWheelchairAccessibleTrips;
   }
 
   req.locals.page.getCurrentPage = function () {
     var dt = moment(req.query.departureTime);
-    return self._base + "/connections/?departureTime=" + encodeURIComponent(dt.format("YYYY-MM-DDTHH:mm"));
+    var onlyWheelchairAccessibleTrips = "";
+    if (req.query.onlyWheelchairAccessibleTrips && req.query.onlyWheelchairAccessibleTrips.toLowerCase() == "true") {
+      onlyWheelchairAccessibleTrips = "&onlyWheelchairAccessibleTrips=true"
+    }
+    return self._base + "/connections/?departureTime=" + encodeURIComponent(dt.format("YYYY-MM-DDTHH:mm")) + onlyWheelchairAccessibleTrips;
   }
   
   next();
